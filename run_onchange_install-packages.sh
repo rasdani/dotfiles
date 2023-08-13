@@ -4,6 +4,7 @@ sudo apt update
 sudo apt install tmux
 echo "installed tmux"
 sudo apt install neovim
+export EDITOR=$(which nvim)
 echo "installed neovim"
 
 if command -v pip &> /dev/null
