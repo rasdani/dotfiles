@@ -17,10 +17,7 @@ else
 fi
 pip install tldr
 sudo apt install -y zsh
-exit
 echo "installed zsh"
-chsh -s $(which zsh)
-echo "chsh returned exit code" $?
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 echo "installed oh-my-zsh"
 git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
