@@ -25,3 +25,4 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/too
 echo "installed oh-my-zsh"
 git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 echo "installed zsh-autosuggestions"
+echo source $HOME/.oh-my-zsh/custom/custom_zshrc.zsh >> $HOME/.zshrc
