@@ -1,0 +1,98 @@
+#
+# Example .tmux.conf
+#
+# By Nicholas Marriott. Public domain.
+#
+
+# Some tweaks to the status line
+set -g status-right "%H:%M"
+set -g window-status-current-style "underscore"
+
+# If running inside tmux ($TMUX is set), then change the status line to red
+%if #{TMUX}
+set -g status-bg red
+%endif
+
+# Enable RGB colour if running in xterm(1)
+set-option -sa terminal-overrides ",xterm*:Tc"
+
+# Change the default $TERM to tmux-256color
+set -g default-terminal "tmux-256color"
+
+# No bells at all
+set -g bell-action none
+
+# Keep windows around after they exij
+set -g remain-on-exit on
+
+# Turn the mouse on, but without copy mode dragging
+#Disable on remote
+#set -g mouse on
+#unbind -n MouseDrag1Pane
+#unbind -Tcopy-mode MouseDrag1Pane
+
+# A key to toggle between smallest and largest sizes if a window is visible in
+# multiple places
+bind F set -w window-size
+
+# Keys to toggle monitoring activity in a window and the synchronize-panes option
+bind m set monitor-activity
+bind y set synchronize-panes\; display 'synchronize-panes #{?synchronize-panes,on,off}'
+
+
+### my part: ###
+
+# Change the prefix key to C-f
+set -g prefix M-d
+unbind C-b
+bind M-d send-prefix
+
+#bind v split-window -v
+#bind s split-window -h
+unbind '"'
+unbind %
+bind r source-file ~/.tmux.conf
+
+# switch panes with Alt and h, j, k, l
+bind -n M-h select-pane -L
+bind -n M-l select-pane -R
+bind -n M-k select-pane -U
+bind -n M-j select-pane -D
+
+#bind -n M-t create-window
+bind j resize-pane -D 2
+bind k resize-pane -U 2
+bind h resize-pane -L 2
+bind l resize-pane -R 2
+
+# Set new panes to open in current directory
+bind c new-window -c "#{pane_current_path}"
+bind v split-window -c "#{pane_current_path}"
+bind s split-window -h -c "#{pane_current_path}"
+
+# Pressing Ctrl+Shift+Left (will move the current window to the left. Similarly
+# right. No need to use the modifier (C-b).
+bind-key -n C-S-Left swap-window -t -1
+bind-key -n C-S-Right swap-window -t +1
+
+# Easier and faster switching between next/prev window
+bind -n M-J previous-window
+bind -n M-K next-window
+
+# Enter copy-mode/scroll easily
+bind -n M-[ copy-mode
+# Address vim mode switching delay (http://superuser.com/a/252717/65504)
+set -s escape-time 0
+
+# Use vim keybindings in copy mode
+setw -g mode-keys vi
+
+
+### PLUGINS: ###
+# plugins go here
+# disable aw-watcher on remote server
+# set -g @plugin 'akohlbecker/aw-watcher-tmux'
+
+# this must always be at the bottom
+# disable plugins on remote for now
+run '~/.tmux/plugins/tpm/tpm'
