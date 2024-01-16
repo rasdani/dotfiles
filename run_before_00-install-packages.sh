@@ -1,36 +1,54 @@
 #!/bin/sh
 
+# Function to execute apt-get install
+install_package() {
+    if [ "$(id -u)" -eq 0 ]; then
+        apt-get install -y "$1"
+    else
+        sudo apt-get install -y "$1"
+    fi
+}
+
 ### install packages, if not present
-sudo apt update
+if [ "$(id -u)" -eq 0 ]; then
+    apt-get update
+else
+    sudo apt-get update
+fi
+
 if ! command -v tmux &> /dev/null
 then
-    sudo apt install -y tmux
+    install_package tmux
     echo "INSTALLED TMUX"
 fi
+
 if ! command -v nvim &> /dev/null
 then
-    sudo apt install -y neovim
+    install_package neovim
     echo "INSTALLED NEOVIM"
 fi
+
 if ! command -v fasd &> /dev/null
 then
-    sudo apt install -y fasd
+    install_package fasd
     echo "INSTALLED FASD"
 fi
 
 if ! command -v pip &> /dev/null
 then
-    sudo apt install python3-pip
+    install_package python3-pip
     echo "INSTALLED PIP"
 fi
+
 if ! command -v tldr &> /dev/null
 then
-    pip install tldr
+        pip install tldr
     echo "INSTALLED TLDR"
 fi
+
 if ! command -v zsh &> /dev/null
 then
-    sudo apt install -y zsh
+    install_package zsh
     echo "INSTALLED ZSH"
 fi
 
@@ -50,6 +68,10 @@ fi
 ### don't touch picky .zshrc
 echo source $HOME/.oh-my-zsh/custom/custom_zshrc.zsh >> $HOME/.zshrc
 
-chsh -s $(which zsh)
+if [ "$(id -u)" -eq 0 ]; then
+    chsh -s $(which zsh)
+else
+    sudo chsh -s $(which zsh)
+fi
 echo "CHANGED DEFAULT SHELL TO ZSH"
 echo "SETUP DONE"
