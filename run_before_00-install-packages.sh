@@ -2,18 +2,26 @@
 
 # Function to execute apt-get install
 install_package() {
-    if [ "$(id -u)" -eq 0 ]; then
-        apt-get install -y "$1"
+    if [ "$(uname)" = "Darwin" ]; then
+        brew install "$1"
     else
-        sudo apt-get install -y "$1"
+        if [ "$(id -u)" -eq 0 ]; then
+            apt-get install -y "$1"
+        else
+            sudo apt-get install -y "$1"
+        fi
     fi
 }
 
-### install packages, if not present
-if [ "$(id -u)" -eq 0 ]; then
-    apt-get update
+### update package lists, if not present
+if [ "$(uname)" = "Darwin" ]; then
+    brew update
 else
-    sudo apt-get update
+    if [ "$(id -u)" -eq 0 ]; then
+        apt-get update
+    else
+        sudo apt-get update
+    fi
 fi
 
 if ! command -v tmux &> /dev/null
@@ -28,10 +36,10 @@ then
     echo "INSTALLED NEOVIM"
 fi
 
-if ! command -v fasd &> /dev/null
+if ! command -v zoxide &> /dev/null
 then
-    install_package fasd
-    echo "INSTALLED FASD"
+    install_package zoxide
+    echo "INSTALLED ZOXIDE"
 fi
 
 if ! command -v pip &> /dev/null
@@ -65,8 +73,6 @@ then
     echo "INSTALLED ZSH-AUTOSUGGESTIONS"
 fi
 
-### don't touch picky .zshrc
-echo source $HOME/.oh-my-zsh/custom/custom_zshrc.zsh >> $HOME/.zshrc
 
 if [ "$(id -u)" -eq 0 ]; then
     chsh -s $(which zsh)
